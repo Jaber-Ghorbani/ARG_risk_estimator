@@ -1,0 +1,13 @@
+Workflow figure placeholder
+
+Suggested future figure:
+
+1. User enters ARG names or uploads ARG abundance CSV.
+2. App normalizes ARG names.
+3. App matches ARGs to the private server-side score table.
+4. App returns matched ARG scores and unmatched ARG warnings.
+5. App calculates gene-level contributions.
+6. App sums contributions to sample-level abundance-informed index values.
+7. User downloads only their own results.
+
+The full score table remains private and is not exposed as a public download.
