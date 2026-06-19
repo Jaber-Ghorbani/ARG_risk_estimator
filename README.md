@@ -328,14 +328,12 @@ Immediate priorities:
 
 ## Development Team
 
-Developed by:
-
-**Jaber Ghorbani**  
+Developed by: 
 Food Safety & Food Microbiology Lab  
 Department of Food Science and Technology  
 University of Nebraska–Lincoln
 
-Advisor:
+Contact:
 
 **Dr. Bing Wang**
 
