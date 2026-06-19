@@ -1,0 +1,9 @@
+ARG,drug_class,final_hc_score,final_hc_score_percent,clinical_score,mobility_score,pathogenicity_score,inter_environment_score,criteria_completeness,note
+sul1,sulfonamide,0.62,62,0.50,0.80,0.55,0.65,complete,Synthetic demo value only
+intI1,mobile genetic element indicator,0.58,58,0.40,0.90,0.45,0.60,complete,Synthetic demo value only
+tetM,tetracycline,0.46,46,0.35,0.70,0.40,0.45,complete,Synthetic demo value only
+blaTEM,beta-lactam,0.69,69,0.80,0.70,0.65,0.55,complete,Synthetic demo value only
+qnrS,quinolone,0.57,57,0.65,0.55,0.60,0.45,complete,Synthetic demo value only
+ermB,macrolide-lincosamide-streptogramin,0.52,52,0.55,0.60,0.50,0.40,complete,Synthetic demo value only
+vanA,glycopeptide,0.73,73,0.90,0.65,0.70,0.55,complete,Synthetic demo value only
+unknownARG_demo,not assigned,NA,NA,NA,NA,NA,NA,unmatched_example,Synthetic unmatched-control row only
