@@ -1,0 +1,30 @@
+# R session and project files
+.Rhistory
+.RData
+.Rproj.user/
+.Ruserdata
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+
+# Private project data: DO NOT COMMIT
+# The full ARG score database and master workbook must stay private.
+data_private/
+*.xlsx
+MasterExcel*.xlsx
+arg_scores_clean*.csv
+arg_scores_validation*.csv
+arg_scores_data_dictionary*.csv
+arg_scores_clean_schema*.csv
+
+# Deployment/account credentials
+rsconnect/
+.env
+*.Renviron
+
+# Generated outputs
+outputs/
+reports/
+*.html
+*.pdf
