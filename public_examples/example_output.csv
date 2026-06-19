@@ -1,0 +1,4 @@
+SampleID,total_arg_records,matched_args,unmatched_args,total_abundance,abundance_informed_index,top_contributing_args,warning
+Sample_1,3,3,0,2200,914.50,"sul1; tetM; blaTEM",None
+Sample_2,3,2,1,970,301.75,"ermB; qnrS","1 uploaded ARG was not matched to the internal score table"
+Sample_3,2,2,0,425,182.10,"sul2; tetA",None
