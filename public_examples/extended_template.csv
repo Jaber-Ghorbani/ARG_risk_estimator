@@ -1,0 +1,4 @@
+SampleID,ARG,Abundance,Unit,Matrix,Location,Date,Notes
+Sample_1,sul1,1200,copies/mL,Surface water,Site A,2026-06-01,Example row
+Sample_1,tetM,450,copies/mL,Surface water,Site A,2026-06-01,Example row
+Sample_2,blaTEM,85,copies/mL,Wastewater,Site B,2026-06-02,Example row
