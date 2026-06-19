@@ -1,0 +1,9 @@
+SampleID,ARG,Abundance,Unit,Matrix,Location,Date,Notes
+SurfaceWater_A,sul1,1200,copies/mL,Surface water,Site A,2026-06-01,Demonstration record
+SurfaceWater_A,tetM,450,copies/mL,Surface water,Site A,2026-06-01,Demonstration record
+SurfaceWater_A,intI1,900,copies/mL,Surface water,Site A,2026-06-01,Indicator gene example
+Wastewater_B,blaTEM,85,copies/mL,Wastewater,Site B,2026-06-02,Demonstration record
+Wastewater_B,sul1,3000,copies/mL,Wastewater,Site B,2026-06-02,Demonstration record
+Wastewater_B,qnrS,160,copies/mL,Wastewater,Site B,2026-06-02,Demonstration record
+DrinkingWater_C,tetM,15,copies/mL,Drinking water,Site C,2026-06-03,Low-abundance demonstration record
+DrinkingWater_C,unknownARG_demo,50,copies/mL,Drinking water,Site C,2026-06-03,Intentional unmatched example
