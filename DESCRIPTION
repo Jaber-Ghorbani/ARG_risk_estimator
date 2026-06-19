@@ -1,0 +1,26 @@
+Package: ARG.Risk.Estimator
+Type: Shiny
+Title: ARG Risk and Abundance-Informed Index Tool
+Version: 0.1.0
+Authors@R: c(
+    person("Jaber", "Ghorbani", email = "jabergh1372@gmail.com", role = c("aut", "cre")),
+    person("Bing", "Wang", role = "ths")
+  )
+Description: A Shiny application for looking up antimicrobial resistance gene hazard scores and calculating sample-level abundance-informed ARG indices from user-supplied datasets. The public repository contains code, documentation, templates, and synthetic examples only.
+License: To be determined
+Encoding: UTF-8
+Depends:
+    R (>= 4.2.0)
+Imports:
+    shiny,
+    bslib,
+    DT,
+    dplyr,
+    readr,
+    stringr,
+    tidyr,
+    ggplot2,
+    scales
+Suggests:
+    plotly,
+    testthat
