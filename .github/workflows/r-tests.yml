@@ -1,0 +1,45 @@
+name: R tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  r-tests:
+    name: Run R testthat checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Set up R package dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            any::testthat
+            any::shiny
+            any::bslib
+            any::DT
+            any::dplyr
+            any::readr
+            any::stringr
+            any::tidyr
+            any::ggplot2
+            any::scales
+            any::plotly
+
+      - name: Run tests
+        run: |
+          Rscript -e 'testthat::test_dir("tests/testthat")'
