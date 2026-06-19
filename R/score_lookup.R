@@ -1,59 +1,34 @@
-# Helper functions for ARG score lookup
-
 find_first_column <- function(data, candidates) {
-  matches <- candidates[candidates %in% names(data)]
-  if (length(matches) == 0) {
-    return(NA_character_)
-  }
-  matches[[1]]
+  hit <- candidates[candidates %in% names(data)]
+  if (length(hit) == 0) NA_character_ else hit[[1]]
 }
 
 prepare_score_database <- function(score_db) {
   stopifnot(is.data.frame(score_db))
-
-  arg_col <- find_first_column(score_db, c("arg_name", "ARG", "ARG_name", "gene", "aro_name"))
+  arg_col <- find_first_column(score_db, c("arg_name", "ARG", "ARG_name", "gene", "aro_name", "ARO_name"))
   norm_col <- find_first_column(score_db, c("normalized_arg_name", "arg_normalized", "normalized_ARG", "ARG_normalized"))
-  score_col <- find_first_column(score_db, c("final_hc_score", "Final_HC_Score", "final_score", "HC_score"))
+  score_col <- find_first_column(score_db, c("final_hc_score", "Final_HC_Score", "final_score", "HC_score", "hazard_score"))
+  if (is.na(arg_col)) stop("The score table must contain an ARG-name column.", call. = FALSE)
+  if (is.na(score_col)) stop("The score table must contain a final score column.", call. = FALSE)
 
-  if (is.na(arg_col)) {
-    stop("The score database must contain an ARG-name column.", call. = FALSE)
-  }
+  out <- score_db
+  out$.arg_name <- as.character(out[[arg_col]])
+  out$.normalized_arg_name <- if (is.na(norm_col)) normalize_arg_name(out$.arg_name) else as.character(out[[norm_col]])
+  miss <- is.na(out$.normalized_arg_name) | out$.normalized_arg_name == ""
+  out$.normalized_arg_name[miss] <- normalize_arg_name(out$.arg_name[miss])
+  out$.final_hc_score <- suppressWarnings(as.numeric(out[[score_col]]))
 
-  if (is.na(score_col)) {
-    stop("The score database must contain a final hazard-score column.", call. = FALSE)
-  }
+  percent_col <- find_first_column(out, c("final_hc_score_percent", "Final_HC_Score_Percent", "score_percent"))
+  family_col <- find_first_column(out, c("arg_family", "ARG_family", "family"))
+  drug_col <- find_first_column(out, c("drug_class", "Drug_Class", "drug_class_clean", "antibiotic_class"))
+  complete_col <- find_first_column(out, c("criteria_completeness", "criteria_complete", "completeness"))
 
-  prepared <- score_db
-
-  prepared$.arg_name <- as.character(prepared[[arg_col]])
-
-  if (is.na(norm_col)) {
-    prepared$.normalized_arg_name <- normalize_arg_name(prepared$.arg_name)
-  } else {
-    prepared$.normalized_arg_name <- as.character(prepared[[norm_col]])
-    missing_norm <- is.na(prepared$.normalized_arg_name) | prepared$.normalized_arg_name == ""
-    prepared$.normalized_arg_name[missing_norm] <- normalize_arg_name(prepared$.arg_name[missing_norm])
-  }
-
-  prepared$.final_hc_score <- suppressWarnings(as.numeric(prepared[[score_col]]))
-
-  percent_col <- find_first_column(prepared, c("final_hc_score_percent", "Final_HC_Score_Percent", "score_percent"))
-  family_col <- find_first_column(prepared, c("arg_family", "ARG_family", "family"))
-  drug_col <- find_first_column(prepared, c("drug_class", "Drug_Class", "drug_class_clean", "antibiotic_class"))
-  complete_col <- find_first_column(prepared, c("criteria_completeness", "criteria_complete", "completeness"))
-
-  if (is.na(percent_col)) {
-    prepared$.final_hc_score_percent <- round(prepared$.final_hc_score * 100, 2)
-  } else {
-    prepared$.final_hc_score_percent <- suppressWarnings(as.numeric(prepared[[percent_col]]))
-  }
-
-  prepared$.arg_family <- if (is.na(family_col)) NA_character_ else as.character(prepared[[family_col]])
-  prepared$.drug_class <- if (is.na(drug_col)) NA_character_ else as.character(prepared[[drug_col]])
-  prepared$.criteria_completeness <- if (is.na(complete_col)) NA_character_ else as.character(prepared[[complete_col]])
-
-  prepared$.risk_category <- derive_risk_category(prepared$.final_hc_score)
-  prepared
+  out$.final_hc_score_percent <- if (is.na(percent_col)) round(out$.final_hc_score * 100, 2) else suppressWarnings(as.numeric(out[[percent_col]]))
+  out$.arg_family <- if (is.na(family_col)) NA_character_ else as.character(out[[family_col]])
+  out$.drug_class <- if (is.na(drug_col)) NA_character_ else as.character(out[[drug_col]])
+  out$.criteria_completeness <- if (is.na(complete_col)) NA_character_ else as.character(out[[complete_col]])
+  out$.risk_category <- derive_risk_category(out$.final_hc_score)
+  dplyr::distinct(out, .data$.normalized_arg_name, .keep_all = TRUE)
 }
 
 derive_risk_category <- function(score) {
@@ -79,34 +54,28 @@ score_interpretation <- function(score) {
 }
 
 lookup_arg_scores <- function(query_args, score_db) {
-  if (!is.data.frame(score_db)) {
-    stop("score_db must be a data frame.", call. = FALSE)
+  if (!is.data.frame(score_db)) stop("score_db must be a data frame.", call. = FALSE)
+  query_tbl <- if (is.data.frame(query_args)) {
+    dplyr::transmute(query_args, query_arg = as.character(.data$ARG))
+  } else {
+    dplyr::transmute(parse_lookup_args(query_args), query_arg = as.character(.data$ARG))
   }
-
-  query_args <- unique(parse_lookup_args(query_args))
-  validation <- validate_lookup_input(query_args)
-  if (!isTRUE(validation$ok)) {
-    stop(validation$message, call. = FALSE)
-  }
-
-  prepared_db <- prepare_score_database(score_db)
-
-  query_tbl <- tibble::tibble(
-    query_arg = query_args,
-    query_normalized_arg = normalize_arg_name(query_args)
-  )
+  query_tbl <- query_tbl |>
+    dplyr::mutate(query_normalized_arg = normalize_arg_name(.data$query_arg)) |>
+    dplyr::filter(.data$query_normalized_arg != "") |>
+    dplyr::distinct(.data$query_normalized_arg, .keep_all = TRUE)
+  if (nrow(query_tbl) == 0) stop("Enter at least one ARG name before running the lookup.", call. = FALSE)
 
   joined <- dplyr::left_join(
     query_tbl,
-    prepared_db,
+    prepare_score_database(score_db),
     by = c("query_normalized_arg" = ".normalized_arg_name")
   )
-
-  joined %>%
+  joined |>
     dplyr::mutate(
-      matched_status = dplyr::if_else(is.na(.arg_name), "Unmatched", "Matched"),
-      interpretation = score_interpretation(.final_hc_score)
-    ) %>%
+      matched_status = dplyr::if_else(is.na(.data$.arg_name), "Unmatched", "Matched"),
+      interpretation = score_interpretation(.data$.final_hc_score)
+    ) |>
     dplyr::transmute(
       query_arg = .data$query_arg,
       matched_status = .data$matched_status,
@@ -121,26 +90,16 @@ lookup_arg_scores <- function(query_args, score_db) {
     )
 }
 
-matched_lookup_results <- function(lookup_results) {
-  lookup_results %>%
-    dplyr::filter(.data$matched_status == "Matched")
-}
-
-unmatched_lookup_results <- function(lookup_results) {
-  lookup_results %>%
-    dplyr::filter(.data$matched_status == "Unmatched") %>%
-    dplyr::select(.data$query_arg, .data$matched_status)
-}
+matched_lookup_results <- function(lookup_results) dplyr::filter(lookup_results, .data$matched_status == "Matched")
+unmatched_lookup_results <- function(lookup_results) dplyr::select(dplyr::filter(lookup_results, .data$matched_status == "Unmatched"), .data$query_arg, .data$matched_status)
 
 lookup_summary <- function(lookup_results) {
   total <- nrow(lookup_results)
   matched <- sum(lookup_results$matched_status == "Matched", na.rm = TRUE)
-  unmatched <- sum(lookup_results$matched_status == "Unmatched", na.rm = TRUE)
-
   tibble::tibble(
     total_queries = total,
     matched_queries = matched,
-    unmatched_queries = unmatched,
+    unmatched_queries = total - matched,
     match_rate_percent = ifelse(total == 0, NA_real_, round(100 * matched / total, 1))
   )
 }
