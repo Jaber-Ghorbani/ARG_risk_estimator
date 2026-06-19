@@ -9,7 +9,7 @@ prepare_score_database <- function(score_db) {
   norm_col <- find_first_column(score_db, c("normalized_arg_name", "arg_normalized", "normalized_ARG", "ARG_normalized"))
   score_col <- find_first_column(score_db, c("final_hc_score", "Final_HC_Score", "final_score", "HC_score", "hazard_score"))
   if (is.na(arg_col)) stop("The score table must contain an ARG-name column.", call. = FALSE)
-  if (is.na(score_col)) stop("The score table must contain a final score column.", call. = FALSE)
+  if (is.na(score_col)) stop("The score table must contain a final hazard-score column.", call. = FALSE)
 
   out <- score_db
   out$.arg_name <- as.character(out[[arg_col]])
