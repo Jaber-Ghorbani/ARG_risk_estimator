@@ -19,8 +19,10 @@ Imports:
     readr,
     stringr,
     tidyr,
+    tibble,
     ggplot2,
     scales
 Suggests:
     plotly,
-    testthat
+    testthat,
+    rsconnect
