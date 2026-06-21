@@ -1,0 +1,7 @@
+Environment,Environment_Label,Samples,Mean_Index,Median_Index,Min_Index,Max_Index,SD_Index,Total_Index,Mean_RPM_Coverage_Used_Percent,Unique_Gene_Rows,Unique_Genes_Matched,Unique_Genes_Excluded,Unique_Gene_Match_Rate_Percent,Rank
+Hospital,Hospital wastewater,15,829.299538,850.271757,600.049993,1049.150764,139.064287,12439.49307,93.77,720,572,148,79.44,1
+Wastewater,Wastewater treatment samples,26,147.674251,131.770403,22.658543,393.568547,104.626392,3839.530517,98.76,511,442,69,86.50,2
+Drinking,Drinking water,8,27.825208,22.359404,12.485955,62.820821,15.867681,222.601662,98.32,91,85,6,93.41,3
+Lake,Lake water,11,9.307640,11.124215,0.744139,21.413478,6.707532,102.384041,99.26,25,22,3,88.00,4
+River,River water,8,6.064697,5.323411,1.368174,12.009295,3.950899,48.517578,88.61,45,39,6,86.67,5
+Sea,Sea water,25,0.682791,0.382010,0.000000,2.294578,0.703389,17.069765,100.00,65,56,9,86.15,6
