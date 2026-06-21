@@ -346,7 +346,7 @@ Formal citation information will be added after manuscript/tool finalization.
 Interim citation format:
 
 ```text
-Ghorbani, J. ARG Risk & Abundance-Informed Index Tool. University of Nebraska–Lincoln.
+
 ```
 
 ---
