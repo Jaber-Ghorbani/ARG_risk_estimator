@@ -1,122 +1,55 @@
-# ARG Risk & Abundance-Informed Index Tool
+# ARG Abundance-Informed HC Index Tool
 
 <p align="center">
-  <strong>A research-based platform for prioritizing antimicrobial resistance genes across environmental and One Health datasets.</strong>
-</p>
-
-<p align="center">
-  <em>From ARG detection to risk-informed prioritization.</em>
+  <strong>A simple Shiny app for comparing ARG abundance profiles using a hazard-characterization score.</strong>
 </p>
 
 <p align="center">
   <img alt="R Shiny" src="https://img.shields.io/badge/R-Shiny-blue">
-  <img alt="Status" src="https://img.shields.io/badge/status-in%20development-orange">
+  <img alt="Status" src="https://img.shields.io/badge/status-simple%20prototype-orange">
   <img alt="Data policy" src="https://img.shields.io/badge/full%20score%20database-private-red">
-  <img alt="Use" src="https://img.shields.io/badge/use-research%20prioritization-green">
+  <img alt="Output" src="https://img.shields.io/badge/output-abundance--informed%20HC%20index-green">
 </p>
 
 ---
 
-## Quick Navigation
+## What this tool does
 
-- [Purpose](#purpose)
-- [What the Tool Does](#what-the-tool-does)
-- [Scientific Workflow](#scientific-workflow)
-- [Input Format](#input-format)
-- [Public vs Private Data](#public-vs-private-data)
-- [Planned App Tabs](#planned-app-tabs)
-- [Repository Structure](#repository-structure)
-- [Run Locally](#run-locally)
-- [Deployment Plan](#deployment-plan)
-- [Important Interpretation Note](#important-interpretation-note)
-- [Development Team](#development-team)
+This repository contains a public-safe R Shiny prototype for calculating an **abundance-informed HC index** from ARG abundance data.
 
----
+The app does three things:
 
-## Purpose
+1. **Looks up ARG hazard-characterization scores** for entered ARG names.
+2. **Calculates sample-level abundance-informed HC index values** from uploaded ARG abundance tables.
+3. **Compares user samples with reference water-sample benchmarks** from the manuscript Figure 4 analysis.
 
-The **ARG Risk & Abundance-Informed Index Tool** is an R Shiny application for antimicrobial resistance gene (ARG) hazard-score lookup and abundance-informed sample indexing.
+The main calculation is:
 
-The tool is designed for:
+```text
+ARG contribution = ARG abundance × final HC score
 
-- research support,
-- One Health and environmental AMR data interpretation,
-- ARG prioritization,
-- manuscript/tool demonstration,
-- IAFP-style professional presentation,
-- advisor and collaborator review.
-
-The goal is to provide a polished interface where users can enter ARG names or upload ARG abundance datasets and receive interpretable, user-specific outputs without accessing the full internal score database.
+Sample abundance-informed HC index = Σ(ARG contribution)
+```
 
 ---
 
-## What the Tool Does
+## Current simple app structure
 
-Users will be able to:
+The first release is intentionally narrow.
 
-| Feature | Description |
+| App section | Purpose |
 |---|---|
-| ARG score lookup | Enter one ARG or paste a list of ARGs and receive matched hazard-score results. |
-| Dataset upload | Upload a CSV file containing sample IDs, ARG names, and abundance values. |
-| ARG matching | Match uploaded ARGs against an internal server-side ARG score database. |
-| Abundance-informed indexing | Calculate gene-level contributions and sample-level abundance-informed index values. |
-| Top contributor analysis | Identify ARGs that contribute most strongly to sample-level index values. |
-| Unmatched ARG reporting | Warn users when uploaded ARGs are not found in the internal database. |
-| Downloadable outputs | Allow users to download their own matched results and analysis outputs. |
-| Templates and examples | Provide small public example files and upload templates. |
+| Home | Short explanation of the tool and calculation. |
+| ARG lookup | Paste ARG names and check matched scores. |
+| Calculate index | Upload a CSV file or use the built-in example dataset. |
+| Reference waters | View Figure 4-style benchmark values for hospital wastewater, wastewater, drinking water, lake water, river water, and sea water. |
+| Methods | Concise explanation of the score, weights, matching, and interpretation limits. |
 
 ---
 
-## Scientific Workflow
+## Input format
 
-The core workflow is:
-
-```text
-ARG abundance × ARG hazard score = abundance-informed index
-```
-
-At the gene level:
-
-```text
-ARG contribution = ARG abundance × final ARG hazard score
-```
-
-At the sample level:
-
-```text
-Sample-level abundance-informed index = sum(ARG contribution)
-```
-
-This allows users to move from ARG detection or abundance data toward risk-informed prioritization.
-
----
-
-## Score Concept
-
-The internal ARG hazard score integrates four major components:
-
-| Component | Meaning |
-|---|---|
-| Clinical relevance / clinical importance | Relative clinical importance of the antimicrobial class associated with the ARG. |
-| Mobility | Potential association with mobile genetic elements or horizontal gene transfer. |
-| Pathogenic potential | Association with pathogenic or clinically relevant bacterial hosts. |
-| Inter-environment transmissibility | Potential relevance across human, host-associated, man-made, and natural environments. |
-
-Conceptual weighted formula:
-
-```text
-Final hazard score =
-0.284 × Clinical relevance
-+ 0.256 × Mobility
-+ 0.248 × Pathogenic potential
-+ 0.212 × Inter-environment transmissibility
-```
-
----
-
-## Input Format
-
-### Minimal Template
+Upload a CSV file with three required columns:
 
 ```csv
 SampleID,ARG,Abundance
@@ -125,90 +58,79 @@ Sample_1,tetM,450
 Sample_2,blaTEM,85
 ```
 
-### Extended Template
+Rules:
 
-```csv
-SampleID,ARG,Abundance,Unit,Matrix,Location,Date,Notes
-Sample_1,sul1,1200,copies/mL,Surface water,Site A,2026-06-01,Example row
-Sample_1,tetM,450,copies/mL,Surface water,Site A,2026-06-01,Example row
-Sample_2,blaTEM,85,copies/mL,Wastewater,Site B,2026-06-02,Example row
-```
-
-Required columns:
-
-```text
-SampleID
-ARG
-Abundance
-```
-
-Abundance values must be numeric and non-negative.
+- `SampleID` identifies the sample.
+- `ARG` is the ARG name.
+- `Abundance` must be numeric and non-negative.
+- Compare samples only when the same abundance unit and normalization method are used.
 
 ---
 
-## Public vs Private Data
+## Reference water comparison
 
-This repository is intended to contain the **public-safe app code**, documentation, templates, and small example files.
+The app includes a public-safe summary file:
 
-The full internal ARG score database is **not publicly released at this stage**.
+```text
+public_examples/figure4_water_benchmark.csv
+```
 
-### Public-safe content
+This file contains environment-level benchmark values from the validation analysis. It does **not** expose the full ARG score database or the underlying validation dataset.
 
-The public repository may include:
+Reference groups currently included:
+
+| Rank | Water group | Samples | Mean abundance-informed HC index |
+|---:|---|---:|---:|
+| 1 | Hospital wastewater | 15 | 829.300 |
+| 2 | Wastewater treatment samples | 26 | 147.674 |
+| 3 | Drinking water | 8 | 27.825 |
+| 4 | Lake water | 11 | 9.308 |
+| 5 | River water | 8 | 6.065 |
+| 6 | Sea water | 25 | 0.683 |
+
+---
+
+## Public vs private data
+
+This public repository can contain:
 
 - Shiny app code,
 - helper R scripts,
-- documentation,
-- upload templates,
-- small synthetic/demo example datasets,
-- example outputs,
-- CSS and interface assets.
+- public templates,
+- synthetic demo data,
+- summary-level Figure 4 benchmark values,
+- documentation.
 
-### Private content
+This public repository should **not** contain:
 
-The following files should **not** be committed to the public repository:
+- the full ARG score database,
+- the master Excel workbook,
+- validation gene-level contribution files,
+- private user-uploaded datasets,
+- deployment credentials.
 
-- full ARG score database,
-- original master Excel workbook,
-- validation summary and validation issue files,
-- data dictionary and schema files if not intentionally released,
-- private deployment credentials,
-- user-uploaded datasets.
-
-Expected private score-database path during deployment:
+The deployed app can load the private score table from:
 
 ```text
 data_private/arg_scores_clean.csv
 ```
 
-The `data_private/` folder should remain excluded by `.gitignore`.
+or from the protected environment variable:
+
+```text
+ARG_SCORE_DB_PATH
+```
+
+The `.gitignore` file excludes private score tables, Excel workbooks, validation files, credentials, and generated outputs.
 
 ---
 
-## Planned App Tabs
-
-| Tab | Purpose |
-|---|---|
-| Home | Project title, description, and workflow summary. |
-| ARG Score Lookup | Paste ARG names and receive matched score results. |
-| Upload Dataset | Upload abundance data and calculate sample-level index values. |
-| Example Analysis | Run a small built-in example for demonstration. |
-| Template Download | Download minimal and extended CSV templates. |
-| Methods / Score Meaning | Explain score components, weights, completeness, and interpretation. |
-| Results Interpretation | Explain matched/unmatched ARGs, index values, and top contributors. |
-| Exposure Assessment — Coming Soon | Placeholder for future exposure-informed analysis. |
-| Visitor Map & Stats | Optional visitor analytics placeholder, separated from query/upload data. |
-
----
-
-## Repository Structure
+## Repository layout
 
 ```text
 ARG_risk_estimator/
 ├── app.R
 ├── README.md
-├── AGENTS.md
-├── .gitignore
 ├── R/
 │   ├── input_validation.R
 │   ├── score_lookup.R
@@ -216,24 +138,20 @@ ARG_risk_estimator/
 │   ├── plots.R
 │   └── report_download.R
 ├── public_examples/
+│   ├── demo_score_table.csv
+│   ├── example_dataset.csv
 │   ├── minimal_template.csv
 │   ├── extended_template.csv
-│   ├── example_dataset.csv
-│   └── example_output.csv
-├── docs/
-│   ├── project_status.md
-│   ├── score_interpretation.md
-│   ├── user_guide.md
-│   ├── methods_summary.md
-│   └── faq.md
-└── www/
-    ├── custom.css
-    └── workflow_figure_placeholder.txt
+│   └── figure4_water_benchmark.csv
+├── www/
+│   └── custom.css
+└── data_private/
+    └── arg_scores_clean.csv   # private, not committed
 ```
 
 ---
 
-## Run Locally
+## Run locally
 
 Install required R packages:
 
@@ -245,10 +163,8 @@ install.packages(c(
   "dplyr",
   "readr",
   "stringr",
-  "tidyr",
-  "ggplot2",
-  "plotly",
-  "rsconnect"
+  "tibble",
+  "ggplot2"
 ))
 ```
 
@@ -258,99 +174,39 @@ Then run:
 shiny::runApp()
 ```
 
-For full local testing, the private score database should be placed at:
+For full local testing, place the private score table at:
 
 ```text
 data_private/arg_scores_clean.csv
 ```
 
-or provided through a protected server-side environment path.
+The app will fall back to a small synthetic demo score table when the private score table is not available.
 
 ---
 
-## Deployment Plan
+## Interpretation note
 
-The app is intended for server-side Shiny deployment through one of the following:
+The final HC score and abundance-informed HC index are **relative prioritization metrics**.
 
-- shinyapps.io,
-- Posit Connect Cloud,
-- institutional Shiny Server,
-- another protected R Shiny hosting environment.
+They are not:
 
-A standard GitHub Pages site is not sufficient for the complete version because the app requires R server logic and private score-database handling.
+- direct infection-risk estimates,
+- regulatory thresholds,
+- diagnostic results,
+- predictions of clinical outcome.
 
----
-
-## Visitor Map & Stats
-
-A future deployment may include a visitor map or usage-statistics widget.
-
-Privacy note:
-
-> Visitor statistics are separate from ARG queries and uploaded datasets. Query inputs and uploaded ARG datasets should not be shared with the visitor-map provider.
+Unmatched ARGs should not be interpreted as low-risk. They indicate that the uploaded ARG name did not match the current score table and may require synonym review or future database expansion.
 
 ---
 
-## Important Interpretation Note
+## Development team
 
-The final ARG hazard score is a **relative prioritization metric**.
+Developed by Jaber Ghorbani, Food Safety & Food Microbiology Lab, Department of Food Science and Technology, University of Nebraska–Lincoln.
 
-It is **not**:
-
-- a direct clinical infection-risk estimate,
-- a regulatory threshold,
-- a diagnostic result,
-- a substitute for exposure assessment,
-- a standalone prediction of human health outcome.
-
-The abundance-informed index should only be compared across samples analyzed with the same abundance unit and normalization method.
-
-Unmatched ARGs should not be interpreted as low-risk. They indicate that the uploaded ARG name was not matched to the internal score database and may require manual review, synonym checking, or future database expansion.
-
----
-
-## Current Development Status
-
-This repository is in active development.
-
-Immediate priorities:
-
-1. Build the Shiny app skeleton.
-2. Add public-safe templates and examples.
-3. Add input-validation functions.
-4. Add ARG-name normalization and score lookup functions.
-5. Add abundance-informed index calculations.
-6. Add polished user-interface styling.
-7. Test locally in RStudio.
-8. Deploy through a protected Shiny host.
-
----
-
-## Development Team
-
-Developed by: 
-Food Safety & Food Microbiology Lab  
-Department of Food Science and Technology  
-University of Nebraska–Lincoln
-
-Contact:
-
-**Dr. Bing Wang**
+Advisor: Dr. Bing Wang
 
 ---
 
 ## Citation
 
-Formal citation information will be added after manuscript/tool finalization.
-
-Interim citation format:
-
-```text
-TBD
-```
-
----
-
-## Data-Release Note
-
-The public codebase is intended to support tool development and demonstration. The full internal ARG score database is not included in this repository. Public users should only access matched results from their own ARG queries or uploaded datasets.
+Formal citation will be added after manuscript/tool finalization.
