@@ -95,7 +95,11 @@ Reference groups currently included:
 | 4 | Lake water | 11 | 9.308 |
 | 5 | River water | 8 | 6.065 |
 | 6 | Sea water | 25 | 0.683 |
+## Reference comparison from the manuscript
 
+The tool allows users to compare their uploaded sample against the abundance-informed HC index values reported for different water sample types.
+
+![Figure 4. Abundance-informed HC index across water sample types](www/Abundance_informed_HC_index_by_environment.png)
 ---
 
 ## Public vs private data
