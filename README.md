@@ -11,6 +11,14 @@
   <img alt="Output" src="https://img.shields.io/badge/output-abundance--informed%20HC%20index-green">
 </p>
 
+<p align="center">
+  <a href="https://YOUR-SHINY-ACCOUNT.shinyapps.io/ARG_risk_estimator/"><strong>Launch the Shiny app</strong></a>
+</p>
+
+<p align="center">
+  <em>Replace <code>YOUR-SHINY-ACCOUNT</code> with the active shinyapps.io account after deployment.</em>
+</p>
+
 ---
 
 ## What this tool does
@@ -181,6 +189,30 @@ data_private/arg_scores_clean.csv
 ```
 
 The app will fall back to a small synthetic demo score table when the private score table is not available.
+
+---
+
+## Deploy to shinyapps.io
+
+After the app is ready, deploy it from RStudio or the R console:
+
+```r
+install.packages("rsconnect")
+rsconnect::setAccountInfo(
+  name = "YOUR-SHINY-ACCOUNT",
+  token = "YOUR-TOKEN",
+  secret = "YOUR-SECRET"
+)
+rsconnect::deployApp(appName = "ARG_risk_estimator")
+```
+
+After deployment, update the launch link at the top of this README to:
+
+```text
+https://YOUR-SHINY-ACCOUNT.shinyapps.io/ARG_risk_estimator/
+```
+
+Do not commit deployment tokens, secrets, or private score tables to GitHub.
 
 ---
 
