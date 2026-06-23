@@ -50,7 +50,7 @@ The first release is intentionally narrow.
 | Home | Short explanation of the tool and calculation. |
 | ARG lookup | Paste ARG names and check matched scores. |
 | Calculate index | Upload a CSV file or use the built-in example dataset. |
-| Reference waters | View Figure 4-style benchmark values for hospital wastewater, wastewater, drinking water, lake water, river water, and sea water. |
+| Reference waters | View Figure 1-style benchmark values for hospital wastewater, wastewater, drinking water, lake water, river water, and sea water. |
 | Methods | Concise explanation of the score, weights, matching, and interpretation limits. |
 
 ---
@@ -72,6 +72,12 @@ Rules:
 - `ARG` is the ARG name.
 - `Abundance` must be numeric and non-negative.
 - Compare samples only when the same abundance unit and normalization method are used.
+
+The abundance unit is </mark>user-defined</mark>. Acceptable units may include RPM, copies/mL, copies/g, relative abundance, normalized read counts, or log-transformed abundance values. However, the calculated index is unit-dependent.
+
+For comparisons among the user’s own samples, any consistent abundance unit can be used, as long as the same unit and normalization method are applied across all uploaded samples.
+
+For comparison with the manuscript Figure 4 water-sample benchmark values, abundance values should be reported as RPM, because the validation analysis used RPM-normalized ARG abundance. Samples reported in copies/mL, copies/g, relative abundance, or log units can still be analyzed, but their index values should not be directly compared with the Figure 4 RPM-based benchmark values.
 
 ---
 
@@ -100,6 +106,7 @@ Reference groups currently included:
 The tool allows users to compare their uploaded sample against the abundance-informed HC index values reported for different water sample types.
 
 ![Figure 4. Abundance-informed HC index across water sample types](www/Abundance_informed_HC_index_by_environment.png)
+Figure 1 Abundance-informed HC index across water metagenomics samples
 ---
 
 ## Public vs private data
