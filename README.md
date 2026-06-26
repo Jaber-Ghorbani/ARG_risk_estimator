@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <a href="https://YOUR-SHINY-ACCOUNT.shinyapps.io/ARG_risk_estimator/"><strong>Launch the Shiny app</strong></a>
+  <a href="https://jaberghorbani.shinyapps.io/ARG_risk_estimator_v2/"><strong>Launch the Shiny app</strong></a>
 </p>
 
 <p align="center">
