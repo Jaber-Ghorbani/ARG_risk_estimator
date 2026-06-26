@@ -15,9 +15,7 @@
   <a href="https://jaberghorbani.shinyapps.io/ARG_risk_estimator_v2/"><strong>Launch the Shiny app</strong></a>
 </p>
 
-<p align="center">
-  <em>Replace <code>YOUR-SHINY-ACCOUNT</code> with the active shinyapps.io account after deployment.</em>
-</p>
+
 
 ---
 
